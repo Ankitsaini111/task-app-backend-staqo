@@ -11,9 +11,9 @@ exports.createProduct = async (req, res) => {
         // if (!product_color === product_color) {
         //     return res.send({ message: "same color product is not create some times" })
         // }
-        const existinRecord = await Product.findOne({where:{productName,category,product_color}})
+        const existinRecord = await Product.findOne({ where: { productName, category, product_color } })
         if (existinRecord) {
-            return res.status(400).send({message:"product already exist"})
+            return res.status(400).send({ message: "product already exist" })
         }
         let newProduct = new Product(
             {
@@ -86,8 +86,21 @@ exports.createProduct = async (req, res) => {
             // return res.send({
             //     message: "product deleted successfully", record
             // })
-            return res.status(200).send({ message: "product deleted successfully",record })
+            return res.status(200).send({ message: "product deleted successfully", record })
         } catch (error) {
             return res.status(500).send({ message: error.message })
         }
     }
+
+exports.getAllProducts = async (req, res) => {
+    try {
+        let product = await Product.findAndCountAll({
+            where: {
+                user_id: req.user_id
+            }
+        })
+        return res.status(200).send({ message: "find all product", product })
+    } catch (error) {
+        return res.status(500).send({ message: error.message })
+    }
+}
