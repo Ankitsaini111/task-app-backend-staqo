@@ -10,7 +10,7 @@ const { response } = require('express');
 
 exports.createUser = async (req, res) => {
     try {
-        let { userName, email, password } = req.body;
+        let { userName, email, password,role } = req.body;
         if (!(userName && email && password)) {
             return res.status(400).send('All fields are compulsory')
         }
@@ -22,12 +22,16 @@ exports.createUser = async (req, res) => {
             return res.status(401).send('User already exist')
         } else {
             const hashedpassword = await bcrypt.hash(password, 10)
-            const user = await User.create({
+            let record={
                 userName: userName,
                 email: email,
                 password: hashedpassword
-            })
-
+            }
+            if(role){
+                record.role=role
+            }
+            const user = await User.create(record)
+        
             let token = jwt.sign({ id: user.id }, 'anykey')
             user["token"] = token
             user["password"] = null
@@ -45,7 +49,7 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!(email && password)) {
-            return res.status(400).send('please provide valid password & email')
+            return res.status(400).send({message:'please provide valid email and password'})
 
         }
         const user = await User.findOne({ where: { email } })
@@ -63,7 +67,7 @@ exports.login = async (req, res) => {
             }
             return res.status(200).send(response)
         } else {
-            return res.status(400).send('incorrect password')
+            return res.status(400).send({message:'incorrect password'})
 
         }
 
@@ -80,7 +84,7 @@ exports.updatedUser = async (req, res) => {
         }
         const user = await User.findOne({ where: { id: req.user_id } })
         if (!user) {
-            return res.status(404).send('User not found')
+            return res.status(404).send({message:'User not found'})
         }
         user.userName = updatedUser.userName
         await user.save()

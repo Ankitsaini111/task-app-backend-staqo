@@ -16,7 +16,7 @@ db.dbConnect()
 
 require('./routes/authRoute')(app)
 require('./routes/taskRoute')(app)
-
+require('./routes/categoryRoute')(app)
 app.listen(serverConfig.PORT, () => {
     console.log(`Server is running up and down by PORT: ${serverConfig.PORT}`);
 })

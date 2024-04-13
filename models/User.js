@@ -1,4 +1,4 @@
-const { DataTypes,Sequelize } = require('sequelize')
+const { DataTypes, Sequelize } = require('sequelize')
 const { dbInstance } = require('../configs/dbConfig')
 
 const User = dbInstance.define('user', {
@@ -12,6 +12,11 @@ const User = dbInstance.define('user', {
         alowNull: false,
         unique: true
     },
+    role: {
+        type:DataTypes.STRING,
+        defaultValue: 'user',
+        enum: ['admin', 'user']
+    },
     email: {
         type: DataTypes.STRING,
         alowNull: false,
@@ -19,16 +24,16 @@ const User = dbInstance.define('user', {
     },
     password: {
         type: DataTypes.STRING,
-        alowNull: false
+        allowNull: false
 
     },
     status: {
         type: DataTypes.STRING,
         defaultValue: 'active',
-        enum:["active","inactive"]
+        enum: ["active", "inactive"]
     }
 })
-// User.sync()
+// User.sync({alter:true})
 
 module.exports = {
     User
