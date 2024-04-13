@@ -13,6 +13,10 @@ const User = dbInstance.define('user', {
         alowNull: false,
         unique: true
     },
+    role:{
+        type: DataTypes.STRING,
+        enum:["admin","user"]
+    },
     email: {
         type: DataTypes.STRING,
         alowNull: false,
@@ -28,7 +32,7 @@ const User = dbInstance.define('user', {
         defaultValue: 'active'
     }
 })
-User.sync()
+// User.sync({alter:true})
 
 module.exports = {
     User

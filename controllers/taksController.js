@@ -4,7 +4,7 @@ exports.createTask = async (req, res) => {
     try {
         const { title, description, start_from, end_to } = req.body
         if (!(title)) {
-            return res.send('please enter title')
+            return res.send({message:'please enter title'})
         }
         const record = new Task({
             title,
