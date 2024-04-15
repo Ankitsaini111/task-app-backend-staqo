@@ -33,7 +33,7 @@ const Task = dbInstance.define('task', {
         defaultValue: "inProgress"
     }
 })
-// Task.sync({alter:true})
+Task.sync()
 
 
 

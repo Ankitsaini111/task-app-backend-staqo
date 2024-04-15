@@ -38,7 +38,7 @@ const Product = dbInstance.define('product', {
     }
 })
 
-// Product.sync({ alter: true })
+Product.sync()
 module.exports = {
     Product
 }
