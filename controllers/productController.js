@@ -1,6 +1,7 @@
 const { where } = require('sequelize');
 const { Product } = require('../models/product')
-const { contants, _status } = require('../utils/contants')
+const { contants, _status } = require('../utils/contants');
+const { User } = require('../models/User');
 
 
 
@@ -94,12 +95,19 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
     try {
+        let  category  = req.query.category 
+    
+        let user = await User.findOne({ id: req.user_id })
+        if (!user) {
+            return res.status(401).send({ message: 'User not found' })
+        }
         let product = await Product.findAndCountAll({
             where: {
-                user_id: req.user_id
+                category,
+                status:'active'
             }
         })
-        return res.status(200).send({ message: "find all product", product })
+        return res.status(200).send({ message: "all product found", product })
     } catch (error) {
         return res.status(500).send({ message: error.message })
     }

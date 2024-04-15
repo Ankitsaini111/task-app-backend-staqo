@@ -8,5 +8,5 @@ module.exports = (app) => {
     //     console.log(req.user_id);
     // })
     app.delete('/v1/deleteProduct/:id', verifyToken, deleteProduct)
-    app.get('v1/getAllProducts', getAllProducts)
+    app.get('/v1/getAllProducts', verifyToken, getAllProducts)
 }
