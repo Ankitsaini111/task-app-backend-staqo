@@ -9,6 +9,9 @@ const Category = dbInstance.define('category', {
     allowNull: false,
     primaryKey: true
   },
+  user_id:{
+    type:DataTypes.INTEGER.UNSIGNED
+  },
   categoryName: {
     type: DataTypes.STRING
   },

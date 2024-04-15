@@ -41,10 +41,11 @@ exports.updateCategory = async (req, res) => {
 
 exports.getAllCategories = async (req, res) => {
     try {
-        const {id}=req.body
+        // const {id}=req.params
         let categories = await Category.findAndCountAll({
             where:{
-                id:id
+                status:'active',
+                user_id:req.user_id
             },attributes:['categoryName','type']
         })
         return res.status(200).send({ message: 'categories find ',categories })
@@ -57,11 +58,11 @@ exports.getAllCategories = async (req, res) => {
 
 exports.deleteCategory=async(req,res)=>{
  try {
-    let {id}=req.body;
+    // let {id}=req.body;
     await Category.update({
         status:'inactive'
     },{
-        where:{id:id}
+        where:{user_id:req.user_id}
     });
     return res.status(200).send({message:'category deleted sucessfully'})
 } catch (error) {
