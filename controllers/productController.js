@@ -95,17 +95,21 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
     try {
-        let  category  = req.query.category 
-    
+        let category = req.query.category
+
         let user = await User.findOne({ id: req.user_id })
         if (!user) {
             return res.status(401).send({ message: 'User not found' })
         }
+        const _where_cond = {
+            status: 'active'
+        }
+        if (category) {
+            _where_cond.category = category
+        }
         let product = await Product.findAndCountAll({
-            where: {
-                category,
-                status:'active'
-            }
+            where: _where_cond
+
         })
         return res.status(200).send({ message: "all product found", product })
     } catch (error) {

@@ -33,7 +33,7 @@ const User = dbInstance.define('user', {
         enum: ["active", "inactive"]
     }
 })
-// User.sync({alter:true})
+User.sync()
 
 module.exports = {
     User

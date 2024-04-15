@@ -31,7 +31,7 @@ exports.getAllTask = async (req, res) => {
             attributes: ['id', 'title', 'description','user_id', 'start_from', 'end_to']
 
         })
-        return res.status(200).send({ message: 'find all users', data: task })
+        return res.status(200).send({ message: 'Tasks found successfully', data: task })
     } catch (error) {
         return res.status(200).send({ message: error.message })
 
