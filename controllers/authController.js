@@ -5,11 +5,17 @@ const { _auth } = require('../configs');
 const { sendMail } = require('../utils/node_mailer');
 const { comparePassword } = require('../utils/comparePassword');
 const { Op } = require('sequelize');
+const validator = require('validator');
+const { response } = require('express');
+
 exports.createUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
         if (!(userName && email && password)) {
             return res.status(400).send({message:'All fields are compulsory'})
+        }
+        if(!validator.isEmail(email)){
+            return res.status(400).send({message:'Invalid email'})
         }
         const existingUser = await User.findOne({ where: { email: email } })
         if (existingUser) {
@@ -49,7 +55,12 @@ exports.login = async (req, res) => {
         let comparePassword = await bcrypt.compare(password, user.password)
         if (comparePassword) {
             const token = jwt.sign({ id: user.id }, _auth.jwtSecretKey)
-            return res.status(200).send({ token })
+            let response={
+                userName:user.userName,
+                email:user.email,
+                token
+            }
+            return res.status(200).send(response)
         } else {
             return res.status(400).send({message:'incorrect password'})
 
@@ -64,8 +75,9 @@ exports.login = async (req, res) => {
 exports.updatedUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
-        let updatedUser = { userName }
-
+        let updatedUser = {
+            userName,
+        }
         const user = await User.findOne({ where: { id: req.user_id } })
         if (!user) {
             return res.status(404).send({message:'User not found'})
@@ -81,10 +93,14 @@ exports.updatedUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
+        let user_id = req.user_id
         await User.update({
             status: 'inactive'
-        }, { where: { id: req.user_id } })
-        return res.status(400).send({ message: 'User deleted successfully' })
+        },
+            {
+                where: { id: user_id }
+            })
+        return res.status(400).send({message:'user deleted successfully'})
     } catch (error) {
         return res.send(error)
 
@@ -103,7 +119,7 @@ exports.sendMailForFogotPass = async (req, res) => {
             }
         })
         if (!user) {
-            return res.status(400).send({ message: `user does'nt exist` })
+            return res.status(400).send({ message: `user doesn't exist` })
         }
         let newPassword = 'deffed' + user.userName + 'abccba'
         user.password = await bcrypt.hash(newPassword, 10)
@@ -112,8 +128,8 @@ exports.sendMailForFogotPass = async (req, res) => {
         const mailTemplate = `
     Hello ${user.userName},
     Your password has been updated and now 
-    your password is <h2 style={{color:'green'}}>${newPassword}</h2>.
-    Kindly reset your password as per your convience
+    your password is <h2>${newPassword}</h2>.
+    Kindly reset your password as per your convenience
     `
         await sendMail(user.email, 'Fogot Password', mailTemplate)
         return res.status(200).send({ message: 'Mail send successfully' })
