@@ -16,6 +16,7 @@ db.dbConnect()
 
 require('./routes/authRoute')(app)
 require('./routes/taskRoute')(app)
+require('./routes/categoryRoute')(app)
 require('./routes/productRoutes')(app)
 
 app.listen(serverConfig.PORT, () => {

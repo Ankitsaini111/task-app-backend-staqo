@@ -10,7 +10,7 @@ const { response } = require('express');
 
 exports.createUser = async (req, res) => {
     try {
-        let { userName, email, password } = req.body;
+        let { userName, email, password,role } = req.body;
         if (!(userName && email && password)) {
             return res.status(400).send({message:'All fields are compulsory'})
         }
@@ -22,12 +22,16 @@ exports.createUser = async (req, res) => {
             return res.status(401).send({message:'User already exist'})
         } else {
             const hashedpassword = await bcrypt.hash(password, 10)
-            const user = await User.create({
+            let record={
                 userName: userName,
                 email: email,
                 password: hashedpassword
-            })
-
+            }
+            if(role){
+                record.role=role
+            }
+            const user = await User.create(record)
+        
             let token = jwt.sign({ id: user.id }, 'anykey')
             user["token"] = token
             user["password"] = null

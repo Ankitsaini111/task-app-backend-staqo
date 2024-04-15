@@ -16,7 +16,7 @@ exports.createTask = async (req, res) => {
         let respond = await record.save()
         return res.status(200).send({ message: 'task created', data: respond })
     } catch (error) {
-        return res.status(500).send('unable to create')
+        return res.status(500).send({message:'unable to create'})
 
     }
 }
