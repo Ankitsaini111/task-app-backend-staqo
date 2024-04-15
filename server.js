@@ -9,7 +9,7 @@ const serverConfig = require("./configs/serverConfig")
 app.use(bodyParser.json())
 app.use(cors())
 
-const db=require('./configs/dbConfig')
+const db = require('./configs/dbConfig')
 db.dbConnect()
 
 
@@ -17,6 +17,8 @@ db.dbConnect()
 require('./routes/authRoute')(app)
 require('./routes/taskRoute')(app)
 require('./routes/categoryRoute')(app)
+require('./routes/productRoutes')(app)
+
 app.listen(serverConfig.PORT, () => {
     console.log(`Server is running up and down by PORT: ${serverConfig.PORT}`);
 })

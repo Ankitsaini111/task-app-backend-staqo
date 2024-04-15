@@ -12,14 +12,14 @@ exports.createUser = async (req, res) => {
     try {
         let { userName, email, password,role } = req.body;
         if (!(userName && email && password)) {
-            return res.status(400).send('All fields are compulsory')
+            return res.status(400).send({message:'All fields are compulsory'})
         }
         if(!validator.isEmail(email)){
             return res.status(400).send({message:'Invalid email'})
         }
         const existingUser = await User.findOne({ where: { email: email } })
         if (existingUser) {
-            return res.status(401).send('User already exist')
+            return res.status(401).send({message:'User already exist'})
         } else {
             const hashedpassword = await bcrypt.hash(password, 10)
             let record={
@@ -44,17 +44,16 @@ exports.createUser = async (req, res) => {
 
 }
 
-
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!(email && password)) {
-            return res.status(400).send({message:'please provide valid email and password'})
+            return res.status(400).send({message:'please provide valid password & email'})
 
         }
         const user = await User.findOne({ where: { email } })
         if (!user) {
-            return res.status(400).send('user doesn,t exist')
+            return res.status(400).send({message:'user doesn,t exist'})
 
         }
         let comparePassword = await bcrypt.compare(password, user.password)
@@ -76,6 +75,7 @@ exports.login = async (req, res) => {
 
     }
 }
+
 exports.updatedUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
@@ -94,7 +94,6 @@ exports.updatedUser = async (req, res) => {
     }
 
 }
-
 
 exports.deleteUser = async (req, res) => {
     try {
@@ -143,7 +142,6 @@ exports.sendMailForFogotPass = async (req, res) => {
 
     }
 }
-
 
 exports.resetPassword = async (req, res) => {
     // const user_id=req.user_id
